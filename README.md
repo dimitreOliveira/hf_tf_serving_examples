@@ -2,9 +2,9 @@
 
 # Repository content
 - [Setup](#setup)
-- [Run](#run)
-- [Content](#content)
-- [Test inference](#test-inference)
+- [Download sample model](#download-sample-model)
+- [Start TF Serving](#start-tf-serving)
+- [Inference](#inference)
 - [References](#references)
 
 ## Setup
@@ -13,13 +13,27 @@
 - TensorFlow Serving - [TensorFlow Serving installation guide](https://www.tensorflow.org/tfx/serving/docker)
 - HuggingFace - [HuggingFace installation guide](https://huggingface.co/docs/transformers/installation)
 
-## Run
-TODO
+## Download sample model
+_this step is optional_
 
-## Test inference
-TODO
+**Available models:**
+- DistilBERT (multi-label)
+```bash
+python3 sample_models/tf_distilbert_multilabel.py
+```
 
-## Content
-TODO
+## Start TF Serving
+_requires Docker_
+
+```bash
+sh scripts/start_tf_serving.sh
+```
+
+## Inference
+```bash
+curl -d '{"instances": sample text}' -X POST http://localhost:8501/v1/models/multi-label:predict
+```
+Or use the notebook  at `notebooks/inference.ipynb`
 
 ## References
+- [TensorFlow Serving with Docker](https://www.tensorflow.org/tfx/serving/docker#creating_your_own_serving_image)
