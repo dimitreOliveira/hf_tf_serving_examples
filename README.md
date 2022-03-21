@@ -14,7 +14,7 @@
 - HuggingFace - [HuggingFace installation guide](https://huggingface.co/docs/transformers/installation)
 
 ## Download sample model
-_this step is optional_
+_*this step is optional_
 
 **Available models:**
 - DistilBERT (multi-label)
@@ -23,13 +23,16 @@ python3 sample_models/tf_distilbert_multilabel.py
 ```
 
 ## Start TF Serving
-_requires Docker_
+*_requires Docker_
+
+*_parameters refer to "DistilBERT (multi-label)" example_
 
 ```bash
-sh scripts/start_tf_serving.sh
+MODEL_SOURCE=$(pwd)/models/multi-label/1 MODEL_TARGET=/models/multi-label/1 MODEL_NAME=multi-label sh scripts/start_tf_serving.sh
 ```
 
 ## Inference
+_*bash command not working yet, needs integration with tokenizer_
 ```bash
 curl -d '{"instances": sample text}' -X POST http://localhost:8501/v1/models/multi-label:predict
 ```
