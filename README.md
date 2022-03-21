@@ -19,7 +19,7 @@ _*this step is optional_
 **Available models:**
 - DistilBERT (multi-label)
 ```bash
-python3 sample_models/tf_distilbert_multilabel.py
+python3 sample_models/tf_distilbert_multilabel.py get_model
 ```
 
 ## Start TF Serving
