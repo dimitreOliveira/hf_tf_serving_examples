@@ -30,6 +30,10 @@ python3 sample_models/tf_distilbert_multilabel.py get_model
 ```bash
 MODEL_SOURCE=$(pwd)/models/multi-label/1 MODEL_TARGET=/models/multi-label/1 MODEL_NAME=multi-label sh scripts/start_tf_serving.sh
 ```
+Parameters:
+- `MODEL_SOURCE`: path to the model in your local system.
+- `MODEL_TARGET`: path to the model in the Docker env.
+- `MODEL_NAME`: Model name used by TFServing, this name will be part of the API URL.
 
 ## Inference
 _*bash command not working yet, needs integration with tokenizer_
@@ -40,3 +44,4 @@ Or use the notebook  at `notebooks/inference.ipynb`
 
 ## References
 - [TensorFlow Serving with Docker](https://www.tensorflow.org/tfx/serving/docker#creating_your_own_serving_image)
+- [Faster TensorFlow models in Hugging Face Transformers](https://huggingface.co/blog/tf-serving)
