@@ -4,7 +4,9 @@ import transformers
 import gradio as gr
 
 
-tokenizer_path = os.environ.get("TOKENIZER_PATH", "./tokenizers")
+server_port = os.environ.get("SERVER_PORT", 7861)
+server_name = os.environ.get("SERVER_NAME", "0.0.0.0")
+tokenizer_path = os.environ.get("TOKENIZER_PATH", "./tokenizers/distilbert-base-uncased")
 rest_url = os.environ.get("TF_URL", "http://localhost:8501/v1/models/multi-label:predict")
 
 print(f"Requesting predictions from: {rest_url}")
@@ -31,4 +33,4 @@ iface = gr.Interface(
     outputs="text",
 )
 if __name__ == "__main__":
-    app, local_url, share_url = iface.launch()
+    app, local_url, share_url = iface.launch(server_port=server_port, server_name=server_name, )

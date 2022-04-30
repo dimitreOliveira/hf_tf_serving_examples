@@ -25,11 +25,25 @@ Parameters:
 - `MODEL_TARGET`: path to the model in the Docker env.
 - `MODEL_NAME`: Model name used by TFServing, this name will be part of the API URL.
 
+_After finished you can use `docker ps` to check active containers and then `docker stop` to stop it._
+
 If you don't have a model to use, you can create one using one of the sample models:
 ### Available sample models:
+- DistilBERT (multi-class)
+```bash
+python sample_models/tf_models.py get_distilbert_multiclass
+```
 - DistilBERT (multi-label)
 ```bash
-python sample_models/tf_distilbert_multilabel.py get_model
+python sample_models/tf_models.py get_distilbert_multilabel
+```
+- DistilBERT (regression)
+```bash
+python sample_models/tf_models.py get_distilbert_regression
+```
+- DistilBERT (embedding)
+```bash
+python sample_models/tf_models.py get_distilbert_embedding
 ```
 
 ## Inference
@@ -39,11 +53,11 @@ We have two options to access the model and make inferences.
  - Just use the notebook at `notebooks/text_inference.ipynb`
 
 ### Gradio APP
-- Run the `app.py` command for your specific use case
+- Run the `app.py` command folder for your specific use case at the `gradio_apps`
 - Available use cases:
   - Text:
     ```bash
-    python text_app.py
+    TF_URL="http://localhost:8501/v1/models/multi-label:predict" TOKENIZER_PATH="./tokenizers/distilbert-base-uncased" python gradio_apps/text_app.py
     ```
 
  *_ To be more generic, predictions from the Gradio apps will return raw outputs_
@@ -51,15 +65,12 @@ We have two options to access the model and make inferences.
  
  #### For all use cases:
  - `TF_URL`: REST API URL provided by your TF Serving.
-   - e.g. `'http://localhost:8501/v1/models/multi-label:predict'`
+   - e.g. `"http://localhost:8501/v1/models/multi-label:predict"`
+     - Swap {`multi-label`} with your model's name
  
  #### Text use case:
  - `TOKENIZER_PATH`: path to the tokenizer in your local system.
-   - e.g. `'./tokenizers'`
-
-On Linux, you can create environment variables with `export VARIABLE=value`
-- e.g. `export TOKENIZER_PATH='./tokenizers'`
-
+   - e.g. `"./tokenizerstokenizers/distilbert-base-uncased"`
 
 ## References
 - [TensorFlow Serving with Docker](https://www.tensorflow.org/tfx/serving/docker#creating_your_own_serving_image)
