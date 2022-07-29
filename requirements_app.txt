@@ -1,4 +1,5 @@
+PyYAML
 gradio
+Jinja2
 requests
 transformers
-Jinja2

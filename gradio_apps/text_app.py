@@ -7,7 +7,7 @@ import gradio as gr
 server_port = os.environ.get("SERVER_PORT", 7861)
 server_name = os.environ.get("SERVER_NAME", "0.0.0.0")
 tokenizer_path = os.environ.get("TOKENIZER_PATH", "./tokenizers/distilbert-base-uncased")
-rest_url = os.environ.get("TF_URL", "http://localhost:8501/v1/models/multi-label:predict")
+rest_url = os.environ.get("TF_URL", "http://localhost:8501/v1/models/multi-class:predict")
 
 print(f"Requesting predictions from: {rest_url}")
 print(f"Loading tokenizer from: {tokenizer_path}")

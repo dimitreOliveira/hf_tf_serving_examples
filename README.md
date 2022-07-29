@@ -15,10 +15,16 @@
 ## Start TensorFlow Serving
 *_requires Docker_
 
-*_parameters refer to "DistilBERT (multi-label)" sample example_
+*_parameters refer to "DistilBERT (embedding)" sample example_
 
 ```bash
-MODEL_SOURCE=$(pwd)/models/multi-label/1 MODEL_TARGET=/models/multi-label/1 MODEL_NAME=multi-label sh scripts/start_tf_serving.sh
+MODEL_SOURCE=$(pwd)/models/embedding/saved_model/1 MODEL_TARGET=/models/embedding/1 MODEL_NAME=embedding sh scripts/start_tf_serving.sh
+```
+
+*_parameters refer to "DistilBERT (custom)" sample example_
+
+```bash
+MODEL_SOURCE=$(pwd)/models/custom/1 MODEL_TARGET=/models/custom/1 MODEL_NAME=custom sh scripts/start_tf_serving.sh
 ```
 Parameters:
 - `MODEL_SOURCE`: path to the model in your local system.
@@ -28,22 +34,15 @@ Parameters:
 _After finished you can use `docker ps` to check active containers and then `docker stop` to stop it._
 
 If you don't have a model to use, you can create one using one of the sample models:
+
 ### Available sample models:
-- DistilBERT (multi-class)
-```bash
-python sample_models/tf_models.py get_distilbert_multiclass
-```
-- DistilBERT (multi-label)
-```bash
-python sample_models/tf_models.py get_distilbert_multilabel
-```
-- DistilBERT (regression)
-```bash
-python sample_models/tf_models.py get_distilbert_regression
-```
 - DistilBERT (embedding)
 ```bash
-python sample_models/tf_models.py get_distilbert_embedding
+python sample_models/text_models.py get_distilbert_embedding
+```
+- DistilBERT (custom)
+```bash
+python sample_models/text_models.py get_distilbert_custom
 ```
 
 ## Inference
@@ -57,7 +56,7 @@ We have two options to access the model and make inferences.
 - Available use cases:
   - Text:
     ```bash
-    TF_URL="http://localhost:8501/v1/models/multi-label:predict" TOKENIZER_PATH="./tokenizers/distilbert-base-uncased" python gradio_apps/text_app.py
+    TF_URL="http://localhost:8501/v1/models/embedding:predict" TOKENIZER_PATH="./tokenizers/distilbert-base-uncased" python gradio_apps/text_app.py
     ```
 
  *_ To be more generic, predictions from the Gradio apps will return raw outputs_
@@ -65,8 +64,8 @@ We have two options to access the model and make inferences.
  
  #### For all use cases:
  - `TF_URL`: REST API URL provided by your TF Serving.
-   - e.g. `"http://localhost:8501/v1/models/multi-label:predict"`
-     - Swap {`multi-label`} with your model's name
+   - e.g. `"http://localhost:8501/v1/models/embedding:predict"`
+     - Swap {`embedding`} with your model's name
  
  #### Text use case:
  - `TOKENIZER_PATH`: path to the tokenizer in your local system.
@@ -75,3 +74,4 @@ We have two options to access the model and make inferences.
 ## References
 - [TensorFlow Serving with Docker](https://www.tensorflow.org/tfx/serving/docker#creating_your_own_serving_image)
 - [Gradio - Getting Started](https://gradio.app/getting_started/)
+- [Deploying TensorFlow Vision Models in Hugging Face with TF Serving](https://huggingface.co/blog/tf-serving-vision)
