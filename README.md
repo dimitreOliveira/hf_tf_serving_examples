@@ -40,6 +40,14 @@ If you don't have a model to use, you can create one using one of the sample mod
 ```bash
 python sample_models/text_models.py get_distilbert_embedding
 ```
+- DistilBERT (sequence classification)
+```bash
+python sample_models/text_models.py get_distilbert_sequence_classification
+```
+- DistilBERT (token classification - NER)
+```bash
+python sample_models/text_models.py get_distilbert_token_classification
+```
 - DistilBERT (custom)
 ```bash
 python sample_models/text_models.py get_distilbert_custom
