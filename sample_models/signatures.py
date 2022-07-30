@@ -1,8 +1,8 @@
 import tensorflow as tf
 
 
-def seq_classification_exporter(model, labels, tokenizer):
-    input_signature = [tf.TensorSpec([None], tf.int32, name=name) for name in tokenizer.model_input_names]
+def seq_classification_signature(model, labels, input_names):
+    input_signature = [tf.TensorSpec([None], tf.int32, name=name) for name in input_names]
     @tf.function(input_signature=[input_signature])
     def serving_fn(input):
         predictions = model(input).logits
@@ -15,8 +15,8 @@ def seq_classification_exporter(model, labels, tokenizer):
     return serving_fn
 
 
-def token_classification_exporter(model, labels, tokenizer):
-    input_signature = [tf.TensorSpec([None], tf.int32, name=name) for name in tokenizer.model_input_names]
+def token_classification_signature(model, labels, input_names):
+    input_signature = [tf.TensorSpec([None], tf.int32, name=name) for name in input_names]
     @tf.function(input_signature=[input_signature])
     def serving_fn(input):
         predictions = model(input).logits
@@ -24,5 +24,18 @@ def token_classification_exporter(model, labels, tokenizer):
                                    indices=tf.argmax(predictions, axis=-1))
         probs = tf.reduce_max(predictions, axis=-1)
         return {"label": tokens_classes, "probs": probs}
+
+    return serving_fn
+
+
+def multiple_choice_exporter(model, input_names):
+    input_signature = [tf.TensorSpec([None, None, None], tf.int32, name=name) for name in input_names]
+    @tf.function(input_signature=[input_signature])
+    def serving_fn(input):
+        predictions = model(input).logits
+        probs = tf.nn.softmax(predictions, axis=1)
+        choice_probs = tf.reduce_max(probs, axis=-1)
+        choice = tf.argmax(probs, axis=-1)
+        return {"label": choice, "probs": choice_probs}
 
     return serving_fn

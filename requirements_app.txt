@@ -1,5 +1,5 @@
-PyYAML
 gradio
 Jinja2
 requests
+tensorflow
 transformers

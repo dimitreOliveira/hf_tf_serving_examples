@@ -2,7 +2,7 @@ import fire
 import transformers
 import tensorflow as tf
 import tensorflow.keras.layers as L
-from exporters import seq_classification_exporter, token_classification_exporter
+from signatures import seq_classification_signature, token_classification_signature, multiple_choice_exporter
 
 
 def get_distilbert_embedding(tokenizer_output: str="./tokenizers", model_output: str="./models/embedding", 
@@ -30,9 +30,10 @@ def get_distilbert_sequence_classification(tokenizer_output: str="./tokenizers",
     print(model.summary())
 
     labels = list(model.config.id2label.values())
+    input_names = tokenizer.model_input_names
     tf.saved_model.save(obj=model, 
                         export_dir=f"{model_output}/{model_version}", 
-                        signatures={"serving_default": seq_classification_exporter(model, labels, tokenizer)})
+                        signatures={"serving_default": seq_classification_signature(model, labels, input_names)})
     print(f"Saving model at {model_output}/{model_version}")
 
 
@@ -47,9 +48,27 @@ def get_distilbert_token_classification(tokenizer_output: str="./tokenizers", mo
     print(model.summary())
 
     labels = list(model.config.id2label.values())
+    input_names = tokenizer.model_input_names
     tf.saved_model.save(obj=model, 
                         export_dir=f"{model_output}/{model_version}", 
-                        signatures={"serving_default": token_classification_exporter(model, labels, tokenizer)})
+                        signatures={"serving_default": token_classification_signature(model, labels, input_names)})
+    print(f"Saving model at {model_output}/{model_version}")
+
+
+def get_distilbert_multiple_choice(tokenizer_output: str="./tokenizers", model_output: str="./models/multiple_choice", 
+                                    model_version: str="1", model_name: str="distilbert-base-uncased"):
+    tokenizer = transformers.DistilBertTokenizer.from_pretrained(model_name)
+    tokenizer.save_pretrained(f"{tokenizer_output}/{model_name}")
+    print(f"Saving tokenizer at {tokenizer_output}/{model_name}")
+
+    print(f'Loading model from pre-trained checkpoint "{model_name}"')
+    model = transformers.TFDistilBertForMultipleChoice.from_pretrained(model_name)
+    print(model.summary())
+
+    input_names = tokenizer.model_input_names
+    tf.saved_model.save(obj=model, 
+                        export_dir=f"{model_output}/{model_version}", 
+                        signatures={"serving_default": multiple_choice_exporter(model, input_names)})
     print(f"Saving model at {model_output}/{model_version}")
 
 

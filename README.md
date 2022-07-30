@@ -48,6 +48,10 @@ python sample_models/text_models.py get_distilbert_sequence_classification
 ```bash
 python sample_models/text_models.py get_distilbert_token_classification
 ```
+- DistilBERT (multiple choice)
+```bash
+python sample_models/text_models.py get_distilbert_multiple_choice
+```
 - DistilBERT (custom)
 ```bash
 python sample_models/text_models.py get_distilbert_custom
@@ -63,9 +67,18 @@ We have two options to access the model and make inferences.
 - Run the `app.py` command folder for your specific use case at the `gradio_apps`
 - Available use cases:
   - Text:
-    ```bash
-    TF_URL="http://localhost:8501/v1/models/embedding:predict" TOKENIZER_PATH="./tokenizers/distilbert-base-uncased" python gradio_apps/text_app.py
-    ```
+    - Generic
+      ```bash
+      TF_URL="http://localhost:8501/v1/models/embedding:predict" TOKENIZER_PATH="./tokenizers/distilbert-base-uncased" python gradio_apps/text_app.py
+      ```
+    - token classification - NER
+      ```bash
+      TF_URL="http://localhost:8501/v1/models/token_classification:predict" TOKENIZER_PATH="./tokenizers/distilbert-base-uncased" python gradio_apps/text_ner_app.py
+      ```
+    - multiple choice
+      ```bash
+      TF_URL="http://localhost:8501/v1/models/multiple_choice:predict" TOKENIZER_PATH="./tokenizers/distilbert-base-uncased" python gradio_apps/text_multiple_choice_app.py
+      ```
 
  *_ To be more generic, predictions from the Gradio apps will return raw outputs_
  *_Gradio apps requires you to define environment variables_
