@@ -27,9 +27,7 @@ def predict(prompt, choice1, choice2):
     }
     resp = requests.post(rest_url, json=json_data).json()
     prediction = resp["predictions"][0]
-    labels = prediction["label"]
-    probs = prediction["probs"]
-    return labels, probs
+    return prediction["label"], prediction["probs"]
 
 iface = gr.Interface(
     fn=predict,

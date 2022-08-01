@@ -2,7 +2,7 @@ import fire
 import transformers
 import tensorflow as tf
 import tensorflow.keras.layers as L
-from signatures import seq_classification_signature, token_classification_signature, multiple_choice_exporter
+from signatures import seq_classification_signature, token_classification_signature, multiple_choice_signature, qa_signature
 
 
 def get_distilbert_embedding(tokenizer_output: str="./tokenizers", model_output: str="./models/embedding", 
@@ -68,7 +68,24 @@ def get_distilbert_multiple_choice(tokenizer_output: str="./tokenizers", model_o
     input_names = tokenizer.model_input_names
     tf.saved_model.save(obj=model, 
                         export_dir=f"{model_output}/{model_version}", 
-                        signatures={"serving_default": multiple_choice_exporter(model, input_names)})
+                        signatures={"serving_default": multiple_choice_signature(model, input_names)})
+    print(f"Saving model at {model_output}/{model_version}")
+
+
+def get_distilbert_qa(tokenizer_output: str="./tokenizers", model_output: str="./models/qa", model_version: str="1", 
+                        model_name: str="distilbert-base-uncased"):
+    tokenizer = transformers.DistilBertTokenizer.from_pretrained(model_name)
+    tokenizer.save_pretrained(f"{tokenizer_output}/{model_name}")
+    print(f"Saving tokenizer at {tokenizer_output}/{model_name}")
+
+    print(f'Loading model from pre-trained checkpoint "{model_name}"')
+    model = transformers.TFDistilBertForQuestionAnswering.from_pretrained(model_name)
+    print(model.summary())
+
+    input_names = tokenizer.model_input_names
+    tf.saved_model.save(obj=model, 
+                        export_dir=f"{model_output}/{model_version}", 
+                        signatures={"serving_default": qa_signature(model, input_names)})
     print(f"Saving model at {model_output}/{model_version}")
 
 

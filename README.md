@@ -52,6 +52,10 @@ python sample_models/text_models.py get_distilbert_token_classification
 ```bash
 python sample_models/text_models.py get_distilbert_multiple_choice
 ```
+- DistilBERT (question answering)
+```bash
+python sample_models/text_models.py get_distilbert_qa
+```
 - DistilBERT (custom)
 ```bash
 python sample_models/text_models.py get_distilbert_custom
@@ -78,6 +82,10 @@ We have two options to access the model and make inferences.
     - multiple choice
       ```bash
       TF_URL="http://localhost:8501/v1/models/multiple_choice:predict" TOKENIZER_PATH="./tokenizers/distilbert-base-uncased" python gradio_apps/text_multiple_choice_app.py
+      ```
+    - question answering
+      ```bash
+      TF_URL="http://localhost:8501/v1/models/qa:predict" TOKENIZER_PATH="./tokenizers/distilbert-base-uncased" python gradio_apps/text_qa_app.py
       ```
 
  *_ To be more generic, predictions from the Gradio apps will return raw outputs_

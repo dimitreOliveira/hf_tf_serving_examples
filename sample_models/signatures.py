@@ -28,7 +28,7 @@ def token_classification_signature(model, labels, input_names):
     return serving_fn
 
 
-def multiple_choice_exporter(model, input_names):
+def multiple_choice_signature(model, input_names):
     input_signature = [tf.TensorSpec([None, None, None], tf.int32, name=name) for name in input_names]
     @tf.function(input_signature=[input_signature])
     def serving_fn(input):
@@ -37,5 +37,21 @@ def multiple_choice_exporter(model, input_names):
         choice_probs = tf.reduce_max(probs, axis=-1)
         choice = tf.argmax(probs, axis=-1)
         return {"label": choice, "probs": choice_probs}
+
+    return serving_fn
+
+
+def qa_signature(model, input_names):
+    input_signature = [tf.TensorSpec([None], tf.int32, name=name) for name in input_names]
+    @tf.function(input_signature=[input_signature])
+    def serving_fn(input):
+        predictions = model(input)
+        start = tf.math.argmax(predictions.start_logits, axis=-1)
+        end = tf.math.argmax(predictions.end_logits, axis=-1)
+        start_probs = tf.nn.softmax(predictions.start_logits, axis=1)
+        start_probs = tf.reduce_max(start_probs, axis=1)
+        end_probs = tf.nn.softmax(predictions.end_logits, axis=1)
+        end_probs = tf.reduce_max(end_probs, axis=1)
+        return {"start": start, "end": end, "start_probs": start_probs, "end_probs": end_probs}
 
     return serving_fn
