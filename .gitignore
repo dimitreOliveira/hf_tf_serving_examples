@@ -1,4 +1,5 @@
 models/*
 flagged/*
 tokenizers/*
+.vscode/*
 */__pycache__/*
