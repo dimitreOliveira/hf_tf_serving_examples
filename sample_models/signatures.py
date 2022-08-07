@@ -80,3 +80,31 @@ def qa_signature(model: tf.keras.Model, input_names: list):
         }
 
     return serving_fn
+
+
+def text_generation_signature(model: tf.keras.Model, eos_token: int, max_len: int):
+    @tf.function(input_signature=[tf.TensorSpec([None], tf.int32)])
+    def serving_fn(input):
+        def cond(inputs):
+            length_cond = tf.less(tf.size(inputs), max_len)
+            eos_cond = tf.math.not_equal(
+                tf.gather(inputs, (tf.size(inputs) - 1), axis=-1),
+                tf.constant(eos_token),
+            )
+            return tf.math.logical_and(length_cond, eos_cond)
+
+        def body(inputs):
+            predictions = model(inputs)
+            next_token_logits = predictions.logits[-1, :]
+            next_token_scores = tf.nn.log_softmax(next_token_logits, axis=-1)
+            next_token_id = tf.argmax(next_token_scores, axis=-1)
+            next_token_id = tf.cast(
+                tf.expand_dims(next_token_id, axis=0), dtype="int32"
+            )
+            return (tf.concat([inputs, next_token_id], axis=-1),)
+
+        generated = tf.while_loop(cond=cond, body=body, loop_vars=[input])
+        generated = tf.convert_to_tensor(generated)
+        return {"generated": generated}
+
+    return serving_fn

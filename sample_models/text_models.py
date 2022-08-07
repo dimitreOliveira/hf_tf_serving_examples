@@ -7,6 +7,7 @@ from signatures import (
     token_classification_signature,
     multiple_choice_signature,
     qa_signature,
+    text_generation_signature,
 )
 
 
@@ -125,6 +126,32 @@ def get_distilbert_qa(
         obj=model,
         export_dir=f"{model_output}/{model_version}",
         signatures={"serving_default": qa_signature(model, input_names)},
+    )
+    print(f"Saving model at {model_output}/{model_version}")
+
+
+def get_distilgpt2_text_generation(
+    tokenizer_output: str = "./tokenizers",
+    model_output: str = "./models/text_generation",
+    model_version: str = "1",
+    model_name: str = "distilgpt2",
+    max_len: int = 50,
+):
+    tokenizer = transformers.AutoTokenizer.from_pretrained(model_name)
+    tokenizer.save_pretrained(f"{tokenizer_output}/{model_name}")
+    print(f"Saving tokenizer at {tokenizer_output}/{model_name}")
+
+    print(f'Loading model from pre-trained checkpoint "{model_name}"')
+    model = transformers.TFAutoModelWithLMHead.from_pretrained(model_name)
+    print(model.summary())
+
+    eos_token = tokenizer.eos_token_id
+    tf.saved_model.save(
+        obj=model,
+        export_dir=f"{model_output}/{model_version}",
+        signatures={
+            "serving_default": text_generation_signature(model, eos_token, max_len)
+        },
     )
     print(f"Saving model at {model_output}/{model_version}")
 

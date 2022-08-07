@@ -23,13 +23,12 @@ def preprocess(
     prompt: str,
     choice1: str,
     choice2: str,
-    tokenizer: transformers.tokenization_utils.PreTrainedTokenizer,
 ):
     return tokenizer([prompt, prompt], [choice1, choice2], padding=True)
 
 
 def predict(prompt: str, choice1: str, choice2: str):
-    tokenized_inputs = preprocess(prompt, choice1, choice2, tokenizer)
+    tokenized_inputs = preprocess(prompt, choice1, choice2)
     batched_input = [dict(tokenized_inputs)]
 
     json_data = {"signature_name": "serving_default", "instances": batched_input}

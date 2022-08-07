@@ -19,7 +19,6 @@ tokenizer = transformers.AutoTokenizer.from_pretrained(tokenizer_path)
 def preprocess(
     question: str,
     text: str,
-    tokenizer: transformers.tokenization_utils.PreTrainedTokenizer,
 ):
     return tokenizer(question, text)
 
@@ -28,22 +27,21 @@ def postprocess(
     start: int,
     end: int,
     input_ids: list,
-    tokenizer: transformers.tokenization_utils.PreTrainedTokenizer,
 ):
     answer_tokens = input_ids[start : (end + 1)]
     answer = tokenizer.decode(answer_tokens, skip_special_tokens=True)
     return answer
 
 
-def predict(question, text):
-    tokenized_inputs = preprocess(question, text, tokenizer)
+def predict(question: str, text: str):
+    tokenized_inputs = preprocess(question, text)
     batched_input = [dict(tokenized_inputs)]
 
     json_data = {"signature_name": "serving_default", "instances": batched_input}
     resp = requests.post(rest_url, json=json_data).json()
     prediction = resp["predictions"][0]
     answer = postprocess(
-        prediction["start"], prediction["end"], tokenized_inputs.input_ids, tokenizer
+        prediction["start"], prediction["end"], tokenized_inputs.input_ids
     )
     return answer
 

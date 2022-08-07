@@ -18,14 +18,12 @@ print(f'Loading tokenizer from: "{tokenizer_path}"')
 tokenizer = transformers.AutoTokenizer.from_pretrained(tokenizer_path)
 
 
-def preprocess(
-    text: str, tokenizer: transformers.tokenization_utils.PreTrainedTokenizer
-):
+def preprocess(text: str):
     return tokenizer(text, add_special_tokens=False)
 
 
-def predict(input):
-    batched_input = [dict(preprocess(input, tokenizer))]
+def predict(input: str):
+    batched_input = [dict(preprocess(input))]
 
     json_data = {"signature_name": "serving_default", "instances": batched_input}
     resp = requests.post(rest_url, json=json_data).json()

@@ -56,6 +56,10 @@ python sample_models/text_models.py get_distilbert_multiple_choice
 ```bash
 python sample_models/text_models.py get_distilbert_qa
 ```
+- DistilGPT2 (text generation)
+```bash
+python sample_models/text_models.py get_distilgpt2_text_generation
+```
 - DistilBERT (custom)
 ```bash
 python sample_models/text_models.py get_distilbert_custom
@@ -87,8 +91,13 @@ We have two options to access the model and make inferences.
       ```bash
       TF_URL="http://localhost:8501/v1/models/qa:predict" TOKENIZER_PATH="./tokenizers/distilbert-base-uncased" python gradio_apps/text_qa_app.py
       ```
+    - text generation
+      ```bash
+      TF_URL="http://localhost:8501/v1/models/text_generation:predict" TOKENIZER_PATH="./tokenizers/distilgpt2" python gradio_apps/text_generation_app.py
+      ```
 
  *_ To be more generic, predictions from the Gradio apps will return raw outputs_
+ 
  *_Gradio apps requires you to define environment variables_
  
  #### For all use cases:
