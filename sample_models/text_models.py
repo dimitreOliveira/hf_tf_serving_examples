@@ -31,7 +31,6 @@ def get_distilbert_embedding(
 def get_distilbert_sequence_classification(
     tokenizer_output: str = "./tokenizers",
     model_output: str = "./models/seq_classification",
-    model_version: str = "1",
     model_name: str = "distilbert-base-uncased",
 ):
     tokenizer = transformers.DistilBertTokenizer.from_pretrained(model_name)
@@ -46,20 +45,16 @@ def get_distilbert_sequence_classification(
 
     labels = list(model.config.id2label.values())
     input_names = tokenizer.model_input_names
-    tf.saved_model.save(
-        obj=model,
-        export_dir=f"{model_output}/{model_version}",
-        signatures={
-            "serving_default": seq_classification_signature(model, labels, input_names)
-        },
-    )
-    print(f"Saving model at {model_output}/{model_version}")
+    signatures = {
+        "serving_default": seq_classification_signature(model, labels, input_names)
+    }
+    model.save_pretrained(model_output, saved_model=True, signatures=signatures)
+    print(f"Saving model at {model_output}")
 
 
 def get_distilbert_token_classification(
     tokenizer_output: str = "./tokenizers",
     model_output: str = "./models/token_classification",
-    model_version: str = "1",
     model_name: str = "distilbert-base-uncased",
 ):
     tokenizer = transformers.DistilBertTokenizer.from_pretrained(model_name)
@@ -72,22 +67,16 @@ def get_distilbert_token_classification(
 
     labels = list(model.config.id2label.values())
     input_names = tokenizer.model_input_names
-    tf.saved_model.save(
-        obj=model,
-        export_dir=f"{model_output}/{model_version}",
-        signatures={
-            "serving_default": token_classification_signature(
-                model, labels, input_names
-            )
-        },
-    )
-    print(f"Saving model at {model_output}/{model_version}")
+    signatures = {
+        "serving_default": token_classification_signature(model, labels, input_names)
+    }
+    model.save_pretrained(model_output, saved_model=True, signatures=signatures)
+    print(f"Saving model at {model_output}")
 
 
 def get_distilbert_multiple_choice(
     tokenizer_output: str = "./tokenizers",
     model_output: str = "./models/multiple_choice",
-    model_version: str = "1",
     model_name: str = "distilbert-base-uncased",
 ):
     tokenizer = transformers.DistilBertTokenizer.from_pretrained(model_name)
@@ -99,18 +88,14 @@ def get_distilbert_multiple_choice(
     print(model.summary())
 
     input_names = tokenizer.model_input_names
-    tf.saved_model.save(
-        obj=model,
-        export_dir=f"{model_output}/{model_version}",
-        signatures={"serving_default": multiple_choice_signature(model, input_names)},
-    )
-    print(f"Saving model at {model_output}/{model_version}")
+    signatures = {"serving_default": multiple_choice_signature(model, input_names)}
+    model.save_pretrained(model_output, saved_model=True, signatures=signatures)
+    print(f"Saving model at {model_output}")
 
 
 def get_distilbert_qa(
     tokenizer_output: str = "./tokenizers",
     model_output: str = "./models/qa",
-    model_version: str = "1",
     model_name: str = "distilbert-base-uncased",
 ):
     tokenizer = transformers.DistilBertTokenizer.from_pretrained(model_name)
@@ -122,18 +107,14 @@ def get_distilbert_qa(
     print(model.summary())
 
     input_names = tokenizer.model_input_names
-    tf.saved_model.save(
-        obj=model,
-        export_dir=f"{model_output}/{model_version}",
-        signatures={"serving_default": qa_signature(model, input_names)},
-    )
-    print(f"Saving model at {model_output}/{model_version}")
+    signatures = {"serving_default": qa_signature(model, input_names)}
+    model.save_pretrained(model_output, saved_model=True, signatures=signatures)
+    print(f"Saving model at {model_output}")
 
 
 def get_distilgpt2_text_generation(
     tokenizer_output: str = "./tokenizers",
     model_output: str = "./models/text_generation",
-    model_version: str = "1",
     model_name: str = "distilgpt2",
     max_len: int = 50,
 ):
@@ -146,14 +127,11 @@ def get_distilgpt2_text_generation(
     print(model.summary())
 
     eos_token = tokenizer.eos_token_id
-    tf.saved_model.save(
-        obj=model,
-        export_dir=f"{model_output}/{model_version}",
-        signatures={
-            "serving_default": text_generation_signature(model, eos_token, max_len)
-        },
-    )
-    print(f"Saving model at {model_output}/{model_version}")
+    signatures = {
+        "serving_default": text_generation_signature(model, eos_token, max_len)
+    }
+    model.save_pretrained(model_output, saved_model=True, signatures=signatures)
+    print(f"Saving model at {model_output}")
 
 
 def get_distilbert_custom(
@@ -181,8 +159,10 @@ def get_distilbert_custom(
     model = tf.keras.models.Model(inputs=inputs.values(), outputs=outputs)
     print(model.summary())
 
-    tf.saved_model.save(obj=model, export_dir=f"{model_output}/{model_version}")
-    print(f"Saving model at {model_output}/{model_version}")
+    tf.saved_model.save(
+        obj=model, export_dir=f"{model_output}/saved_model/{model_version}"
+    )
+    print(f"Saving model at {model_output}/saved_model/{model_version}")
 
 
 if __name__ == "__main__":

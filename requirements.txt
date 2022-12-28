@@ -1,5 +1,7 @@
+fire
 gradio
 Jinja2
+requests
 requests
 tensorflow
 transformers

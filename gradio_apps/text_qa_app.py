@@ -28,7 +28,7 @@ def postprocess(
     end: int,
     input_ids: list,
 ):
-    answer_tokens = input_ids[start : (end + 1)]
+    answer_tokens = input_ids[start[0] : (end[0] + 1)]
     answer = tokenizer.decode(answer_tokens, skip_special_tokens=True)
     return answer
 

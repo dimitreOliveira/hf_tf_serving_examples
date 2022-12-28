@@ -21,11 +21,6 @@
 MODEL_SOURCE=$(pwd)/models/embedding/saved_model/1 MODEL_TARGET=/models/embedding/1 MODEL_NAME=embedding sh scripts/start_tf_serving.sh
 ```
 
-*_parameters refer to "DistilBERT (custom)" sample example_
-
-```bash
-MODEL_SOURCE=$(pwd)/models/custom/1 MODEL_TARGET=/models/custom/1 MODEL_NAME=custom sh scripts/start_tf_serving.sh
-```
 Parameters:
 - `MODEL_SOURCE`: path to the model in your local system.
 - `MODEL_TARGET`: path to the model in the Docker env.
